@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactPlayer from 'react-player';
 import { getMealDetailsById, getDrinkDetailsById } from '../services/api';
 
 class RecipeDetails extends Component {
   state = {
-    product: {},
+    product: null,
   };
 
   componentDidMount() {
@@ -23,19 +24,57 @@ class RecipeDetails extends Component {
       },
     } = this.props;
 
-    let product = {};
+    let product = null;
     if (pathname.includes('/meals')) product = await getMealDetailsById(id);
     else product = await getDrinkDetailsById(id);
     this.setState({ product });
   };
 
+  getIngredientsAndMeasure = () => {
+    const { product } = this.state;
+    const ingredients = Object.entries(product).filter((entry) => {
+      const [key, value] = entry;
+      return key.includes('strIngredient') && value;
+    }).map((entry) => entry[1]);
+    const measures = Object.entries(product).filter((entry) => {
+      const [key, value] = entry;
+      return key.includes('strMeasure') && value;
+    }).map((entry) => entry[1]);
+    return { ingredients, measures };
+  };
+
   render() {
     const { product } = this.state;
+    if (!product) return (<div>Loading...</div>);
+    const { ingredients, measures } = this.getIngredientsAndMeasure();
+    const ingredientsAndMeasures = ingredients.map((ingredient, index) => (
+      <li key={ index } data-testid={ `${index}-ingredient-name-and-measure` }>
+        { `${ingredient} - ${measures[index]}` }
+      </li>
+    ));
+
     return (
-      <>
-        <div>RecipeDetails</div>
-        <div>{product.idMeal}</div>
-      </>
+      <div>
+        <h2 data-testid="recipe-title">{product.strMeal || product.strDrink}</h2>
+        <p data-testid="recipe-category">
+          { product.strAlcoholic || product.strCategory }
+        </p>
+        <img
+          src={ product.strMealThumb || product.strDrinkThumb }
+          alt="recipe"
+          data-testid="recipe-photo"
+        />
+        <p data-testid="instructions">{ product.strInstructions }</p>
+        <ol>
+          {ingredientsAndMeasures}
+        </ol>
+        { product.strYoutube
+        && (
+          <div data-testid="video">
+            <ReactPlayer url={ product.strYoutube } />
+          </div>) }
+
+      </div>
     );
   }
 }
