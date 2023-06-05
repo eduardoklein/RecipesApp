@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
-import { getMealDetailsById, getDrinkDetailsById } from '../services/api';
+import { getMealDetailsById, getDrinkDetailsById, getRecommendedDrinks,
+  getRecommendedMeals } from '../services/api';
 
 class RecipeDetails extends Component {
   state = {
     product: null,
+    recommended: null,
   };
 
   componentDidMount() {
@@ -25,9 +27,15 @@ class RecipeDetails extends Component {
     } = this.props;
 
     let product = null;
-    if (pathname.includes('/meals')) product = await getMealDetailsById(id);
-    else product = await getDrinkDetailsById(id);
-    this.setState({ product });
+    let recommended = null;
+    if (pathname.includes('/meals')) {
+      product = await getMealDetailsById(id);
+      recommended = await getRecommendedDrinks();
+    } else {
+      product = await getDrinkDetailsById(id);
+      recommended = await getRecommendedMeals();
+    }
+    this.setState({ product, recommended });
   };
 
   getIngredientsAndMeasure = () => {
