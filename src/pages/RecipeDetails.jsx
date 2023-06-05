@@ -90,6 +90,7 @@ class RecipeDetails extends Component {
         <img
           src={ product.strMealThumb || product.strDrinkThumb }
           alt="recipe"
+          className="w-100"
           data-testid="recipe-photo"
         />
         <p data-testid="instructions">{ product.strInstructions }</p>
@@ -99,11 +100,19 @@ class RecipeDetails extends Component {
         { product.strYoutube
         && (
           <div data-testid="video">
-            <ReactPlayer url={ product.strYoutube } />
+            <ReactPlayer url={ product.strYoutube } className="w-100" />
           </div>) }
         <Carousel variant="dark" interval={ null } slide={ false }>
           {recommendations}
         </Carousel>
+        <button
+          type="button"
+          className="w-100 fixed-bottom"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+
+        </button>
       </div>
     );
   }
