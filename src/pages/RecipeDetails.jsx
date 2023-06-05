@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
-import { getMealDetailsById, getDrinkDetailsById, getRecommendedDrinks,
-  getRecommendedMeals } from '../services/api';
+import Carousel from 'react-bootstrap/Carousel';
+import { getMealDetailsById, getDrinkDetailsById, fetchMeals,
+  fetchDrinks } from '../services/api';
 
 class RecipeDetails extends Component {
   state = {
@@ -30,11 +31,12 @@ class RecipeDetails extends Component {
     let recommended = null;
     if (pathname.includes('/meals')) {
       product = await getMealDetailsById(id);
-      recommended = await getRecommendedDrinks();
+      recommended = await fetchDrinks();
     } else {
       product = await getDrinkDetailsById(id);
-      recommended = await getRecommendedMeals();
+      recommended = await fetchMeals();
     }
+    recommended.length = 6;
     this.setState({ product, recommended });
   };
 
@@ -52,13 +54,31 @@ class RecipeDetails extends Component {
   };
 
   render() {
-    const { product } = this.state;
+    const { product, recommended } = this.state;
     if (!product) return (<div>Loading...</div>);
     const { ingredients, measures } = this.getIngredientsAndMeasure();
     const ingredientsAndMeasures = ingredients.map((ingredient, index) => (
       <li key={ index } data-testid={ `${index}-ingredient-name-and-measure` }>
         { `${ingredient} - ${measures[index]}` }
       </li>
+    ));
+
+    const recommendations = recommended.map((item, index) => (
+      <Carousel.Item
+        key={ index }
+        data-testid={ `${index}-recommendation-card` }
+      >
+        <img
+          src={ `${(item.strMealThumb || item.strDrinkThumb)}/preview` }
+          className="d-block w-100"
+          alt="recipe"
+        />
+        <Carousel.Caption>
+          <h3 data-testid={ `${index}-recommendation-title` }>
+            { item.strMeal || item.strDrink }
+          </h3>
+        </Carousel.Caption>
+      </Carousel.Item>
     ));
 
     return (
@@ -81,7 +101,9 @@ class RecipeDetails extends Component {
           <div data-testid="video">
             <ReactPlayer url={ product.strYoutube } />
           </div>) }
-
+        <Carousel variant="dark" interval={ null } slide={ false }>
+          {recommendations}
+        </Carousel>
       </div>
     );
   }

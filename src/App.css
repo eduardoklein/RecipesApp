@@ -15,6 +15,39 @@
   max-height: 80vh;
 }
 
+.carousel {
+  height: 290px;
+  background-color: rgb(230, 230, 230);
+}
+.carousel-inner {
+  margin-top: 20px;
+  padding: 10px;
+}
+.carousel-control-next, .carousel-control-prev {
+  width: 4%;
+  background-color: #464646;
+  height: 200px;
+}
+.carousel-caption {
+  display: inline-block;
+}
+.carousel-item {
+  width: 30%;
+  height: 250px;
+}
+.carousel-item.active {
+  margin-left: 5%;
+}
+/* show 2 items */
+.carousel-inner .active + .carousel-item {
+  display: block;
+  margin-left: 55%;
+}
+.carousel-item:has(+ * + * + * + * + .active) {
+  display: block;
+  margin-left: 55%;
+}
+
 /*
 #iceLeft {
   animation: clink .8s infinite ease;
