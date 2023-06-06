@@ -107,7 +107,7 @@ class RecipeDetails extends Component {
       const alcoholicOrNot = product.strAlcoholic || '';
       const type = product.idDrink ? 'drink' : 'meal';
       const nationality = product.strArea || '';
-      const category = product.strCategory || '';
+      const category = product.strCategory;
       const name = product.strDrink || product.strMeal;
       const image = product.strDrinkThumb || product.strMealThumb;
       localStorage.setItem('favoriteRecipes', JSON.stringify(

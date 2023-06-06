@@ -7,7 +7,7 @@ import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reducer from '../../redux/reducers';
 
-export default renderWithRouterAndRedux = (component, initialState, route = '/') => {
+export const renderWithRouterAndRedux = (component, initialState, route = '/') => {
   const store = createStore(reducer, initialState, applyMiddleware(thunk));
   const history = createMemoryHistory({ initialEntries: [route] });
   return {
@@ -22,3 +22,5 @@ export default renderWithRouterAndRedux = (component, initialState, route = '/')
     store,
   };
 };
+
+export default renderWithRouterAndRedux;
