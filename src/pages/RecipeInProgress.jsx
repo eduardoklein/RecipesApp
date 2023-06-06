@@ -37,12 +37,48 @@ class RecipeInProgress extends Component {
 
   checkRecipeProgress = () => {
     const { product } = this.state;
+    let inProgressRecipes = { meals: {}, drinks: {} };
+    inProgressRecipes = { ...inProgressRecipes,
+      ...JSON.parse(localStorage.getItem('inProgressRecipes')),
+    };
+    const { idMeal } = product;
+    const stepsCompleted = [];
+    let stepsCompletedIndex;
+    if (idMeal) {
+      stepsCompletedIndex = inProgressRecipes.meals[idMeal] || [];
+    } else {
+      const { idDrink } = product;
+      stepsCompletedIndex = inProgressRecipes.drinks[idDrink] || [];
+    }
+    console.log(stepsCompletedIndex);
+    stepsCompletedIndex.forEach((step) => {
+      stepsCompleted[step] = true;
+    });
+    this.setState({ stepsCompleted });
   };
 
   completeStep = (index) => {
-    const { stepsCompleted } = this.state;
+    const { stepsCompleted, product } = this.state;
     stepsCompleted[index] = !stepsCompleted[index];
     this.setState({ stepsCompleted });
+    const completedIndex = stepsCompleted.map((step, idx) => {
+      if (step) return idx;
+      return undefined;
+    }).filter((item) => item !== undefined);
+    const { idMeal } = product;
+    let changedRecipeProgress = {};
+    if (idMeal) {
+      changedRecipeProgress = { meals: { [idMeal]: completedIndex } };
+    } else {
+      const { idDrink } = product;
+      changedRecipeProgress = { drinks: { [idDrink]: completedIndex } };
+    }
+    const previousProgress = JSON
+      .parse(localStorage.getItem('inProgressRecipes')) || {};
+    localStorage.setItem(
+      'inProgressRecipes',
+      JSON.stringify({ ...previousProgress, ...changedRecipeProgress }),
+    );
   };
 
   render() {
@@ -53,7 +89,7 @@ class RecipeInProgress extends Component {
       <li key={ index }>
         <label
           data-testid={ `${index}-ingredient-step` }
-          className={ stepsCompleted[index] && 'ingredient-step-completed' }
+          className={ stepsCompleted[index] ? 'ingredient-step-completed' : '' }
         >
           <input
             type="checkbox"

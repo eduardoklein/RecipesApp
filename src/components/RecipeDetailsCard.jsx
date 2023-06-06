@@ -50,7 +50,8 @@ export default class RecipeDetailsCard extends Component {
   };
 
   shareRecipe = () => {
-    clipboardCopy(window.location.href);
+    const link = window.location.href.replace('/in-progress', '');
+    clipboardCopy(link);
     this.setState({ msg: 'Link copied!' });
   };
 
