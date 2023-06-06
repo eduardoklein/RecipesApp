@@ -7,6 +7,7 @@ import { getMealDetailsById, getDrinkDetailsById, fetchMeals,
   fetchDrinks } from '../services/api';
 import shareIcon from '../images/shareIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 
 class RecipeDetails extends Component {
   state = {
@@ -43,7 +44,18 @@ class RecipeDetails extends Component {
       recommended = await fetchMeals();
     }
     recommended.length = 6;
-    this.setState({ product, recommended }, this.checkRecipeStatus);
+    this.setState({ product, recommended }, () => {
+      this.checkRecipeStatus();
+      this.checkRecipeFavorited();
+    });
+  };
+
+  checkRecipeFavorited = () => {
+    const { product } = this.state;
+    const id = product.idMeal || product.idDrink;
+    const favorited = (JSON.parse(localStorage
+      .getItem('favoriteRecipes')) || []).some((recipe) => (recipe.id === id));
+    if (favorited) this.setState({ favorited: true });
   };
 
   checkRecipeStatus = () => {
@@ -102,8 +114,14 @@ class RecipeDetails extends Component {
         [...otherRecipes,
           { id, type, nationality, category, alcoholicOrNot, name, image }],
       ));
+      this.setState({ favorited: true });
+    } else {
+      const otherRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')).filter(
+        (recipe) => recipe.id !== (product.idDrink || product.idMeal),
+      );
+      localStorage.setItem('favoriteRecipes', JSON.stringify(otherRecipes));
+      this.setState({ favorited: false });
     }
-    return null;
   };
 
   buttonRender = () => {
@@ -135,7 +153,7 @@ class RecipeDetails extends Component {
   };
 
   render() {
-    const { product, recommended, msg } = this.state;
+    const { product, recommended, msg, favorited } = this.state;
     if (!product) return (<div>Loading...</div>);
     const { ingredients, measures } = this.getIngredientsAndMeasure();
     const ingredientsAndMeasures = ingredients.map((ingredient, index) => (
@@ -169,10 +187,14 @@ class RecipeDetails extends Component {
           <img src={ shareIcon } alt="share" />
           Compartilhar
         </button>
-        <button type="button" data-testid="favorite-btn" onClick={ this.favoriteRecipe }>
-          <img src={ blackHeartIcon } alt="favorite" />
-          Favoritar
-        </button>
+        <input
+          className="favorite-btn"
+          type="image"
+          alt="favorite"
+          data-testid="favorite-btn"
+          onClick={ this.favoriteRecipe }
+          src={ favorited ? blackHeartIcon : whiteHeartIcon }
+        />
         <span>{ msg }</span>
         <p data-testid="recipe-category">
           { product.strAlcoholic || product.strCategory }
