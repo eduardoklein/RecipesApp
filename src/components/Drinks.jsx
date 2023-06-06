@@ -5,6 +5,7 @@ class Drinks extends Component {
   state = {
     drinks: [],
     drinksCategories: [],
+    click: false,
   };
 
   componentDidMount() {
@@ -26,14 +27,24 @@ class Drinks extends Component {
   };
 
   handleClick = async (category) => {
+    const { click } = this.state;
+
     const limitNumber = 12;
 
     const filteredDrinks = await fetchFilteredDrinks(category);
     const newFilteredDrinks = filteredDrinks.slice(0, limitNumber);
 
-    this.setState({
-      drinks: newFilteredDrinks,
-    });
+    if (!click) {
+      this.setState({
+        drinks: newFilteredDrinks,
+        click: true,
+      });
+    } else {
+      this.handleFetchDrinks();
+      this.setState({
+        click: false,
+      });
+    }
   };
 
   render() {

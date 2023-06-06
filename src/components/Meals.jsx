@@ -5,6 +5,7 @@ class Meals extends Component {
   state = {
     meals: [],
     mealsCategories: [],
+    click: false,
   };
 
   componentDidMount() {
@@ -26,14 +27,23 @@ class Meals extends Component {
   };
 
   handleClick = async (category) => {
+    const { click } = this.state;
     const limitNumber = 12;
 
     const filteredMeals = await fetchFilteredMeals(category);
     const newFilteredMeals = filteredMeals.slice(0, limitNumber);
 
-    this.setState({
-      meals: newFilteredMeals,
-    });
+    if (!click) {
+      this.setState({
+        meals: newFilteredMeals,
+        click: true,
+      });
+    } else {
+      this.handleFetchMeals();
+      this.setState({
+        click: false,
+      });
+    }
   };
 
   render() {
