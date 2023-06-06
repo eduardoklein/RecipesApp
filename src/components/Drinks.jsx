@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { fetchDrinks, fetchDrinksCategories } from '../services/api';
+import { fetchDrinks, fetchDrinksCategories, fetchFilteredDrinks } from '../services/api';
 
 class Drinks extends Component {
   state = {
@@ -25,6 +25,17 @@ class Drinks extends Component {
     });
   };
 
+  handleClick = async (category) => {
+    const limitNumber = 12;
+
+    const filteredDrinks = await fetchFilteredDrinks(category);
+    const newFilteredDrinks = filteredDrinks.slice(0, limitNumber);
+
+    this.setState({
+      drinks: newFilteredDrinks,
+    });
+  };
+
   render() {
     const { drinks, drinksCategories } = this.state;
 
@@ -34,11 +45,21 @@ class Drinks extends Component {
 
         {drinksCategories.map(({ strCategory }) => (
           <div key={ strCategory }>
-            <button data-testid={ `${strCategory}-category-filter` }>
+            <button
+              data-testid={ `${strCategory}-category-filter` }
+              onClick={ () => this.handleClick(strCategory) }
+            >
               {strCategory}
             </button>
           </div>
         ))}
+
+        <button
+          data-testid="All-category-filter"
+          onClick={ this.handleFetchDrinks }
+        >
+          All
+        </button>
 
         {drinks.map((drink, index) => (
           <div

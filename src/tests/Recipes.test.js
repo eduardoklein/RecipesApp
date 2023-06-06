@@ -2,8 +2,6 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 
-// import meals from '../../cypress/mocks/meals';
-// import drinks from '../../cypress/mocks/drinks';
 import App from '../App';
 
 beforeEach(() => {

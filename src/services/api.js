@@ -25,3 +25,17 @@ export const fetchDrinksCategories = async () => {
   const data = await response.json();
   return data.drinks;
 };
+
+export const fetchFilteredMeals = async (category) => {
+  const URL = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
+  const response = await fetch(URL);
+  const data = await response.json();
+  return data.meals;
+};
+
+export const fetchFilteredDrinks = async (category) => {
+  const URL = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${category}`;
+  const response = await fetch(URL);
+  const data = await response.json();
+  return data.drinks;
+};
