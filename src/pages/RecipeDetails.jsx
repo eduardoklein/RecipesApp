@@ -5,6 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { getMealDetailsById, getDrinkDetailsById, fetchMeals,
   fetchDrinks } from '../services/api';
 import RecipeDetailsCard from '../components/RecipeDetailsCard';
+import { getIngredientsAndMeasure } from '../helpers/recipeFunctions';
 
 class RecipeDetails extends Component {
   state = {
@@ -59,19 +60,6 @@ class RecipeDetails extends Component {
     }
   };
 
-  getIngredientsAndMeasure = () => {
-    const { product } = this.state;
-    const ingredients = Object.entries(product).filter((entry) => {
-      const [key, value] = entry;
-      return key.includes('strIngredient') && value;
-    }).map((entry) => entry[1]);
-    const measures = Object.entries(product).filter((entry) => {
-      const [key, value] = entry;
-      return key.includes('strMeasure') && value;
-    }).map((entry) => entry[1]);
-    return { ingredients, measures };
-  };
-
   startRecipe = () => {
     const { history } = this.props;
     const { location: { pathname } } = history;
@@ -109,7 +97,7 @@ class RecipeDetails extends Component {
   render() {
     const { product, recommended } = this.state;
     if (!product) return (<div>Loading...</div>);
-    const { ingredients, measures } = this.getIngredientsAndMeasure();
+    const { ingredients, measures } = getIngredientsAndMeasure(product);
     const ingredientsAndMeasures = ingredients.map((ingredient, index) => (
       <li key={ index } data-testid={ `${index}-ingredient-name-and-measure` }>
         { `${ingredient} - ${measures[index]}` }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RecipeDetailsCard from '../components/RecipeDetailsCard';
 import { getMealDetailsById, getDrinkDetailsById } from '../services/api';
+import { getIngredientsAndMeasure } from '../helpers/recipeFunctions';
 
 class RecipeInProgress extends Component {
   state = {
@@ -41,10 +42,21 @@ class RecipeInProgress extends Component {
   render() {
     const { product } = this.state;
     if (!product) return (<div>Loading...</div>);
+    const { ingredients, measures } = getIngredientsAndMeasure(product);
+    const checkboxIngredientsAndMeasures = ingredients.map((ingredient, index) => (
+      <li key={ index }>
+        <label data-testid={ `${index}-ingredient-step` }>
+          <input type="checkbox" className="mx-1" />
+          { `${ingredient} - ${measures[index]}` }
+        </label>
+      </li>
+    ));
     return (
       <div>
         <RecipeDetailsCard product={ product } />
-
+        <ol>
+          {checkboxIngredientsAndMeasures}
+        </ol>
         <button
           type="button"
           className="w-100 fixed-bottom py-3"
