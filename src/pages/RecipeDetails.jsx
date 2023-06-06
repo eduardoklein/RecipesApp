@@ -6,6 +6,7 @@ import clipboardCopy from 'clipboard-copy';
 import { getMealDetailsById, getDrinkDetailsById, fetchMeals,
   fetchDrinks } from '../services/api';
 import shareIcon from '../images/shareIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 
 class RecipeDetails extends Component {
   state = {
@@ -13,6 +14,7 @@ class RecipeDetails extends Component {
     recommended: null,
     status: 'new',
     msg: '',
+    favorited: false,
   };
 
   componentDidMount() {
@@ -85,6 +87,25 @@ class RecipeDetails extends Component {
     this.setState({ msg: 'Link copied!' });
   };
 
+  favoriteRecipe = () => {
+    const { product, favorited } = this.state;
+    if (!favorited) {
+      const otherRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+      const id = product.idDrink || product.idMeal;
+      const alcoholicOrNot = product.strAlcoholic || '';
+      const type = product.idDrink ? 'drink' : 'meal';
+      const nationality = product.strArea || '';
+      const category = product.strCategory || '';
+      const name = product.strDrink || product.strMeal;
+      const image = product.strDrinkThumb || product.strMealThumb;
+      localStorage.setItem('favoriteRecipes', JSON.stringify(
+        [...otherRecipes,
+          { id, type, nationality, category, alcoholicOrNot, name, image }],
+      ));
+    }
+    return null;
+  };
+
   buttonRender = () => {
     const { status } = this.state;
     let func;
@@ -148,7 +169,10 @@ class RecipeDetails extends Component {
           <img src={ shareIcon } alt="share" />
           Compartilhar
         </button>
-        <button type="button" data-testid="favorite-btn">Favorite</button>
+        <button type="button" data-testid="favorite-btn" onClick={ this.favoriteRecipe }>
+          <img src={ blackHeartIcon } alt="favorite" />
+          Favoritar
+        </button>
         <span>{ msg }</span>
         <p data-testid="recipe-category">
           { product.strAlcoholic || product.strCategory }
