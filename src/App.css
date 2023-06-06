@@ -37,6 +37,11 @@
   font-weight: 900;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 @keyframes shake {
 
   0% {
