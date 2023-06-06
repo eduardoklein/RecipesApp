@@ -107,7 +107,7 @@ class RecipeDetails extends Component {
         </Carousel>
         <button
           type="button"
-          className="w-100 fixed-bottom"
+          className="w-100 fixed-bottom py-3"
           data-testid="start-recipe-btn"
         >
           Start Recipe
