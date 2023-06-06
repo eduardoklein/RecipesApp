@@ -30,6 +30,12 @@ class Login extends Component {
     }
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { email } = this.state;
+    localStorage.setItem('user', JSON.stringify({ email }));
+  };
+
   render() {
     const { email, password, invalidForm } = this.state;
     return (
@@ -55,6 +61,7 @@ class Login extends Component {
           <button
             data-testid="login-submit-btn"
             disabled={ invalidForm }
+            onClick={ this.handleSubmit }
           >
             Enter
           </button>
