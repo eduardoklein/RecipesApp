@@ -7,6 +7,7 @@ import { getIngredientsAndMeasure } from '../helpers/recipeFunctions';
 class RecipeInProgress extends Component {
   state = {
     product: null,
+    stepsCompleted: [],
   };
 
   componentDidMount() {
@@ -39,20 +40,34 @@ class RecipeInProgress extends Component {
     console.log(product);
   };
 
+  completeStep = (index) => {
+    const { stepsCompleted } = this.state;
+    stepsCompleted[index] = !stepsCompleted[index];
+    this.setState({ stepsCompleted });
+  };
+
   render() {
-    const { product } = this.state;
+    const { product, stepsCompleted } = this.state;
     if (!product) return (<div>Loading...</div>);
     const { ingredients, measures } = getIngredientsAndMeasure(product);
     const checkboxIngredientsAndMeasures = ingredients.map((ingredient, index) => (
       <li key={ index }>
-        <label data-testid={ `${index}-ingredient-step` }>
-          <input type="checkbox" className="mx-1" />
+        <label
+          data-testid={ `${index}-ingredient-step` }
+          className={ stepsCompleted[index] && 'ingredient-step-completed' }
+        >
+          <input
+            type="checkbox"
+            className="mx-1"
+            checked={ stepsCompleted[index] || false }
+            onClick={ () => { this.completeStep(index); } }
+          />
           { `${ingredient} - ${measures[index]}` }
         </label>
       </li>
     ));
     return (
-      <div>
+      <main>
         <RecipeDetailsCard product={ product } />
         <ol>
           {checkboxIngredientsAndMeasures}
@@ -64,7 +79,7 @@ class RecipeInProgress extends Component {
         >
           Finish Recipe
         </button>
-      </div>
+      </main>
     );
   }
 }

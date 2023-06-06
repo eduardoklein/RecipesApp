@@ -123,7 +123,7 @@ class RecipeDetails extends Component {
     ));
 
     return (
-      <div>
+      <main>
         <RecipeDetailsCard product={ product } />
         <ol>
           {ingredientsAndMeasures}
@@ -137,7 +137,7 @@ class RecipeDetails extends Component {
           {recommendations}
         </Carousel>
         { this.buttonRender() }
-      </div>
+      </main>
     );
   }
 }

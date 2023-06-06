@@ -60,6 +60,16 @@
   width: 30px;
 }
 
+.ingredient-step-completed {
+  text-decoration: line-through solid rgb(0, 0, 0);
+}
+
+main {
+  margin-bottom: 70px;
+  padding: 5px;
+}
+
+
 
 /*
 #iceLeft {
