@@ -136,6 +136,8 @@ class RecipeDetails extends Component {
     return (
       <div>
         <h2 data-testid="recipe-title">{product.strMeal || product.strDrink}</h2>
+        <button type="button" data-testid="share-btn">Share</button>
+        <button type="button" data-testid="favorite-btn">Favorite</button>
         <p data-testid="recipe-category">
           { product.strAlcoholic || product.strCategory }
         </p>
