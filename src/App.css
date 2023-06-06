@@ -61,15 +61,13 @@
 }
 
 .ingredient-step-completed {
-  text-decoration: line-through solid rgb(0, 0, 0);
+  text-decoration: line-through solid black;
 }
 
 main {
   margin-bottom: 70px;
   padding: 5px;
 }
-
-
 
 /*
 #iceLeft {
