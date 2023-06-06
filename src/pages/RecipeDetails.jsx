@@ -53,6 +53,12 @@ class RecipeDetails extends Component {
     return { ingredients, measures };
   };
 
+  startRecipe = () => {
+    const { history } = this.props;
+    const { location: { pathname } } = history;
+    history.push(`${pathname}/in-progress`);
+  };
+
   render() {
     const { product, recommended } = this.state;
     if (!product) return (<div>Loading...</div>);
@@ -109,6 +115,7 @@ class RecipeDetails extends Component {
           type="button"
           className="w-100 fixed-bottom py-3"
           data-testid="start-recipe-btn"
+          onClick={ this.startRecipe }
         >
           Start Recipe
 
@@ -128,6 +135,7 @@ RecipeDetails.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
+    push: PropTypes.func.isRequired,
   }).isRequired,
 };
 
