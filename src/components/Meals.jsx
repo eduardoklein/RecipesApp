@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchMealsCategories, fetchMeals, fetchFilteredMeals } from '../services/api';
 
 class Meals extends Component {
@@ -61,6 +62,7 @@ class Meals extends Component {
             </button>
           </div>
         ))}
+
         <button
           data-testid="All-category-filter"
           onClick={ this.handleFetchMeals }
@@ -73,14 +75,17 @@ class Meals extends Component {
             key={ meal.idMeal }
             data-testid={ `${index}-recipe-card` }
           >
-            <p data-testid={ `${index}-card-name` }>
-              {meal.strMeal}
-            </p>
-            <img
-              src={ meal.strMealThumb }
-              alt={ meal.strMeal }
-              data-testid={ `${index}-card-img` }
-            />
+            <Link to={ `/meals/${meal.idMeal}` }>
+              <p data-testid={ `${index}-card-name` }>
+                {meal.strMeal}
+              </p>
+
+              <img
+                src={ meal.strMealThumb }
+                alt={ meal.strMeal }
+                data-testid={ `${index}-card-img` }
+              />
+            </Link>
           </div>
         ))}
       </div>

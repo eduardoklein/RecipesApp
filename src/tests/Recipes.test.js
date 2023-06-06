@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
+import meals from '../../cypress/mocks/meals';
 
 import App from '../App';
 
@@ -14,10 +15,14 @@ afterEach(() => {
 
 describe('Testa o componente Recipes', () => {
   it('Testa se as doze primeiras receitas de comidas são renderizadas', async () => {
+    global.fetch.mockResolvedValueOnce({
+      json: jest.fn().mockResolvedValue(meals),
+    });
+
     renderWithRouterAndRedux(<App />, {}, '/meals');
 
-    const meals = await screen.findAllByTestId(/-recipe-card/i);
-    expect(meals).toHaveLength(12);
+    const allMeals = await screen.findAllByTestId(/-recipe-card/i);
+    expect(allMeals).toHaveLength(12);
   });
 
   it('Testa se as doze primeiras receitas de bebidas são renderizadas', async () => {

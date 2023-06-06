@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchDrinks, fetchDrinksCategories, fetchFilteredDrinks } from '../services/api';
 
 class Drinks extends Component {
@@ -54,8 +55,8 @@ class Drinks extends Component {
       <div>
         <h2>Drinks</h2>
 
-        {drinksCategories.map(({ strCategory }) => (
-          <div key={ strCategory }>
+        {drinksCategories.map(({ strCategory }, index) => (
+          <div key={ index }>
             <button
               data-testid={ `${strCategory}-category-filter` }
               onClick={ () => this.handleClick(strCategory) }
@@ -77,14 +78,16 @@ class Drinks extends Component {
             key={ drink.idDrink }
             data-testid={ `${index}-recipe-card` }
           >
-            <p data-testid={ `${index}-card-name` }>
-              {drink.strDrink}
-            </p>
-            <img
-              src={ drink.strDrinkThumb }
-              alt={ drink.strDrink }
-              data-testid={ `${index}-card-img` }
-            />
+            <Link to={ `/drinks/${drink.idDrink}` }>
+              <p data-testid={ `${index}-card-name` }>
+                {drink.strDrink}
+              </p>
+              <img
+                src={ drink.strDrinkThumb }
+                alt={ drink.strDrink }
+                data-testid={ `${index}-card-img` }
+              />
+            </Link>
           </div>
         ))}
       </div>
