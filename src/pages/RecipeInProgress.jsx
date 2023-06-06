@@ -32,17 +32,24 @@ class RecipeInProgress extends Component {
     } else {
       product = await getDrinkDetailsById(id);
     }
-    this.setState({ product }, this.checkRecipeProgress);
+    const numberOfIngredients = getIngredientsAndMeasure(product).ingredients.length;
+    const stepsCompleted = new Array(numberOfIngredients).fill(false);
+    this.setState({ product, stepsCompleted }, this.checkRecipeProgress);
+  };
+
+  checkCompleted = () => {
+    const { stepsCompleted } = this.state;
+    const completed = stepsCompleted.every((step) => step);
+    return completed;
   };
 
   checkRecipeProgress = () => {
-    const { product } = this.state;
+    const { product, stepsCompleted } = this.state;
     let inProgressRecipes = { meals: {}, drinks: {} };
     inProgressRecipes = { ...inProgressRecipes,
       ...JSON.parse(localStorage.getItem('inProgressRecipes')),
     };
     const { idMeal } = product;
-    const stepsCompleted = [];
     let stepsCompletedIndex;
     if (idMeal) {
       stepsCompletedIndex = inProgressRecipes.meals[idMeal] || [];
@@ -50,7 +57,6 @@ class RecipeInProgress extends Component {
       const { idDrink } = product;
       stepsCompletedIndex = inProgressRecipes.drinks[idDrink] || [];
     }
-    console.log(stepsCompletedIndex);
     stepsCompletedIndex.forEach((step) => {
       stepsCompleted[step] = true;
     });
@@ -79,6 +85,26 @@ class RecipeInProgress extends Component {
       'inProgressRecipes',
       JSON.stringify({ ...previousProgress, ...changedRecipeProgress }),
     );
+  };
+
+  finishRecipe = () => {
+    const { history } = this.props;
+    const { product } = this.state;
+    const tags = product.strTags ? product.strTags.split(',') : [];
+    const recipe = {
+      id: product.idMeal || product.idDrink,
+      type: product.idMeal ? 'meal' : 'drink',
+      nationality: product.strArea || '',
+      category: product.strCategory,
+      alcoholicOrNot: product.strAlcoholic || '',
+      name: product.strDrink || product.strMeal,
+      image: product.strDrinkThumb || product.strMealThumb,
+      doneDate: new Date().toISOString(),
+      tags,
+    };
+    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes')) || [];
+    localStorage.setItem('doneRecipes', JSON.stringify([...doneRecipes, recipe]));
+    history.push('/done-recipes');
   };
 
   render() {
@@ -111,6 +137,8 @@ class RecipeInProgress extends Component {
           type="button"
           className="w-100 fixed-bottom py-3"
           data-testid="finish-recipe-btn"
+          disabled={ !this.checkCompleted() }
+          onClick={ this.finishRecipe }
         >
           Finish Recipe
         </button>
