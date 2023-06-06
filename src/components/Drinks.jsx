@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { fetchDrinks } from '../services/api';
+import { fetchDrinks, fetchDrinksCategories } from '../services/api';
 
 class Drinks extends Component {
   state = {
     drinks: [],
+    drinksCategories: [],
   };
 
   componentDidMount() {
@@ -11,21 +12,34 @@ class Drinks extends Component {
   }
 
   handleFetchDrinks = async () => {
-    const limitNumber = 12;
+    const limitNumbers = { categories: 5, drinks: 12 };
+
     const drinks = await fetchDrinks();
-    const reducedDrinksArr = drinks.slice(0, limitNumber);
+    const drinksCtg = await fetchDrinksCategories();
+    const newDrinksArr = drinks.slice(0, limitNumbers.drinks);
+    const newDrinksCtgArr = drinksCtg.slice(0, limitNumbers.categories);
 
     this.setState({
-      drinks: reducedDrinksArr,
+      drinks: newDrinksArr,
+      drinksCategories: newDrinksCtgArr,
     });
   };
 
   render() {
-    const { drinks } = this.state;
+    const { drinks, drinksCategories } = this.state;
 
     return (
       <div>
         <h2>Drinks</h2>
+
+        {drinksCategories.map(({ strCategory }) => (
+          <div key={ strCategory }>
+            <button data-testid={ `${strCategory}-category-filter` }>
+              {strCategory}
+            </button>
+          </div>
+        ))}
+
         {drinks.map((drink, index) => (
           <div
             key={ drink.idDrink }
