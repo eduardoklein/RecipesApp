@@ -1,7 +1,7 @@
 import { waitFor, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
-import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
+import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux';
 import { mockFetch } from './helpers/mockDataRecipeDetails';
 
 const MEAL_PATH = '/meals/52882';
