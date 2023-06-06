@@ -9,6 +9,7 @@ class RecipeDetails extends Component {
   state = {
     product: null,
     recommended: null,
+    status: 'new',
   };
 
   componentDidMount() {
@@ -37,7 +38,24 @@ class RecipeDetails extends Component {
       recommended = await fetchMeals();
     }
     recommended.length = 6;
-    this.setState({ product, recommended });
+    this.setState({ product, recommended }, this.checkRecipeStatus);
+  };
+
+  checkRecipeStatus = () => {
+    const { product } = this.state;
+    const id = product.idMeal || product.idDrink;
+    const done = (JSON.parse(localStorage
+      .getItem('doneRecipes')) || []).some((recipe) => (recipe.id === id));
+    if (done) this.setState({ status: 'done' });
+    else {
+      let inProgress = { meals: {}, drinks: {} };
+      inProgress = { ...inProgress,
+        ...JSON.parse(localStorage.getItem('inProgressRecipes')),
+      };
+      if (inProgress.meals[id] || inProgress.drinks[id]) {
+        this.setState({ status: 'inProgress' });
+      }
+    }
   };
 
   getIngredientsAndMeasure = () => {
@@ -57,6 +75,34 @@ class RecipeDetails extends Component {
     const { history } = this.props;
     const { location: { pathname } } = history;
     history.push(`${pathname}/in-progress`);
+  };
+
+  buttonRender = () => {
+    const { status } = this.state;
+    let func;
+    let text;
+    switch (status) {
+    case 'done':
+      return null;
+    case 'inProgress':
+      func = this.startRecipe;
+      text = 'Continue Recipe';
+      break;
+    default:
+      func = this.startRecipe;
+      text = 'Start Recipe';
+    }
+    return (
+      <button
+        type="button"
+        className="w-100 fixed-bottom py-3"
+        data-testid="start-recipe-btn"
+        onClick={ func }
+      >
+        {text}
+
+      </button>
+    );
   };
 
   render() {
@@ -111,15 +157,7 @@ class RecipeDetails extends Component {
         <Carousel variant="dark" interval={ null } slide={ false }>
           {recommendations}
         </Carousel>
-        <button
-          type="button"
-          className="w-100 fixed-bottom py-3"
-          data-testid="start-recipe-btn"
-          onClick={ this.startRecipe }
-        >
-          Start Recipe
-
-        </button>
+        { this.buttonRender() }
       </div>
     );
   }
