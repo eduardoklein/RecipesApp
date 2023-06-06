@@ -37,7 +37,6 @@ class RecipeInProgress extends Component {
 
   checkRecipeProgress = () => {
     const { product } = this.state;
-    console.log(product);
   };
 
   completeStep = (index) => {
@@ -60,7 +59,7 @@ class RecipeInProgress extends Component {
             type="checkbox"
             className="mx-1"
             checked={ stepsCompleted[index] || false }
-            onClick={ () => { this.completeStep(index); } }
+            onChange={ () => { this.completeStep(index); } }
           />
           { `${ingredient} - ${measures[index]}` }
         </label>
