@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import Carousel from 'react-bootstrap/Carousel';
-import clipboardCopy from 'clipboard-copy';
 import { getMealDetailsById, getDrinkDetailsById, fetchMeals,
   fetchDrinks } from '../services/api';
-import shareIcon from '../images/shareIcon.svg';
-import blackHeartIcon from '../images/blackHeartIcon.svg';
-import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import RecipeDetailsCard from '../components/RecipeDetailsCard';
+import { getIngredientsAndMeasure } from '../helpers/recipeFunctions';
 
 class RecipeDetails extends Component {
   state = {
     product: null,
     recommended: null,
     status: 'new',
-    msg: '',
-    favorited: false,
   };
 
   componentDidMount() {
@@ -44,18 +40,7 @@ class RecipeDetails extends Component {
       recommended = await fetchMeals();
     }
     recommended.length = 6;
-    this.setState({ product, recommended }, () => {
-      this.checkRecipeStatus();
-      this.checkRecipeFavorited();
-    });
-  };
-
-  checkRecipeFavorited = () => {
-    const { product } = this.state;
-    const id = product.idMeal || product.idDrink;
-    const favorited = (JSON.parse(localStorage
-      .getItem('favoriteRecipes')) || []).some((recipe) => (recipe.id === id));
-    if (favorited) this.setState({ favorited: true });
+    this.setState({ product, recommended }, this.checkRecipeStatus);
   };
 
   checkRecipeStatus = () => {
@@ -75,53 +60,10 @@ class RecipeDetails extends Component {
     }
   };
 
-  getIngredientsAndMeasure = () => {
-    const { product } = this.state;
-    const ingredients = Object.entries(product).filter((entry) => {
-      const [key, value] = entry;
-      return key.includes('strIngredient') && value;
-    }).map((entry) => entry[1]);
-    const measures = Object.entries(product).filter((entry) => {
-      const [key, value] = entry;
-      return key.includes('strMeasure') && value;
-    }).map((entry) => entry[1]);
-    return { ingredients, measures };
-  };
-
   startRecipe = () => {
     const { history } = this.props;
     const { location: { pathname } } = history;
     history.push(`${pathname}/in-progress`);
-  };
-
-  shareRecipe = () => {
-    clipboardCopy(window.location.href);
-    this.setState({ msg: 'Link copied!' });
-  };
-
-  favoriteRecipe = () => {
-    const { product, favorited } = this.state;
-    if (!favorited) {
-      const otherRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-      const id = product.idDrink || product.idMeal;
-      const alcoholicOrNot = product.strAlcoholic || '';
-      const type = product.idDrink ? 'drink' : 'meal';
-      const nationality = product.strArea || '';
-      const category = product.strCategory;
-      const name = product.strDrink || product.strMeal;
-      const image = product.strDrinkThumb || product.strMealThumb;
-      localStorage.setItem('favoriteRecipes', JSON.stringify(
-        [...otherRecipes,
-          { id, type, nationality, category, alcoholicOrNot, name, image }],
-      ));
-      this.setState({ favorited: true });
-    } else {
-      const otherRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')).filter(
-        (recipe) => recipe.id !== (product.idDrink || product.idMeal),
-      );
-      localStorage.setItem('favoriteRecipes', JSON.stringify(otherRecipes));
-      this.setState({ favorited: false });
-    }
   };
 
   buttonRender = () => {
@@ -153,9 +95,9 @@ class RecipeDetails extends Component {
   };
 
   render() {
-    const { product, recommended, msg, favorited } = this.state;
+    const { product, recommended } = this.state;
     if (!product) return (<div>Loading...</div>);
-    const { ingredients, measures } = this.getIngredientsAndMeasure();
+    const { ingredients, measures } = getIngredientsAndMeasure(product);
     const ingredientsAndMeasures = ingredients.map((ingredient, index) => (
       <li key={ index } data-testid={ `${index}-ingredient-name-and-measure` }>
         { `${ingredient} - ${measures[index]}` }
@@ -181,31 +123,8 @@ class RecipeDetails extends Component {
     ));
 
     return (
-      <div>
-        <h2 data-testid="recipe-title">{product.strMeal || product.strDrink}</h2>
-        <button type="button" data-testid="share-btn" onClick={ this.shareRecipe }>
-          <img src={ shareIcon } alt="share" />
-          Compartilhar
-        </button>
-        <input
-          className="favorite-btn"
-          type="image"
-          alt="favorite"
-          data-testid="favorite-btn"
-          onClick={ this.favoriteRecipe }
-          src={ favorited ? blackHeartIcon : whiteHeartIcon }
-        />
-        <span>{ msg }</span>
-        <p data-testid="recipe-category">
-          { product.strAlcoholic || product.strCategory }
-        </p>
-        <img
-          src={ product.strMealThumb || product.strDrinkThumb }
-          alt="recipe"
-          className="w-100"
-          data-testid="recipe-photo"
-        />
-        <p data-testid="instructions">{ product.strInstructions }</p>
+      <main>
+        <RecipeDetailsCard product={ product } />
         <ol>
           {ingredientsAndMeasures}
         </ol>
@@ -218,7 +137,7 @@ class RecipeDetails extends Component {
           {recommendations}
         </Carousel>
         { this.buttonRender() }
-      </div>
+      </main>
     );
   }
 }
