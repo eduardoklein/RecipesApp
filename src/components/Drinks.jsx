@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchDrinks, fetchDrinksCategories, fetchFilteredDrinks } from '../services/api';
+import Footer from './Footer';
 
 class Drinks extends Component {
   state = {
@@ -74,21 +75,25 @@ class Drinks extends Component {
         </button>
 
         {drinks.map((drink, index) => (
-          <div
-            key={ drink.idDrink }
-            data-testid={ `${index}-recipe-card` }
-          >
-            <Link to={ `/drinks/${drink.idDrink}` }>
-              <p data-testid={ `${index}-card-name` }>
-                {drink.strDrink}
-              </p>
-              <img
-                src={ drink.strDrinkThumb }
-                alt={ drink.strDrink }
-                data-testid={ `${index}-card-img` }
-              />
-            </Link>
-          </div>
+          <>
+            <div
+              key={ drink.idDrink }
+              data-testid={ `${index}-recipe-card` }
+            >
+              <Link to={ `/drinks/${drink.idDrink}` }>
+                <p data-testid={ `${index}-card-name` }>
+                  {drink.strDrink}
+                </p>
+                <img
+                  src={ drink.strDrinkThumb }
+                  alt={ drink.strDrink }
+                  data-testid={ `${index}-card-img` }
+                />
+              </Link>
+            </div>
+            <Footer />
+
+          </>
         ))}
       </div>
     );
