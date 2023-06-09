@@ -72,27 +72,24 @@ class Meals extends Component {
         </button>
 
         {meals.map((meal, index) => (
-          <>
-            <div
-              key={ meal.idMeal }
-              data-testid={ `${index}-recipe-card` }
-            >
-              <Link to={ `/meals/${meal.idMeal}` }>
-                <p data-testid={ `${index}-card-name` }>
-                  {meal.strMeal}
-                </p>
+          <div
+            key={ meal.idMeal }
+            data-testid={ `${index}-recipe-card` }
+          >
+            <Link to={ `/meals/${meal.idMeal}` }>
+              <p data-testid={ `${index}-card-name` }>
+                {meal.strMeal}
+              </p>
 
-                <img
-                  src={ meal.strMealThumb }
-                  alt={ meal.strMeal }
-                  data-testid={ `${index}-card-img` }
-                />
-              </Link>
-            </div>
-            <Footer />
-
-          </>
+              <img
+                src={ meal.strMealThumb }
+                alt={ meal.strMeal }
+                data-testid={ `${index}-card-img` }
+              />
+            </Link>
+          </div>
         ))}
+        <Footer />
       </div>
     );
   }

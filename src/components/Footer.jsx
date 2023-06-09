@@ -16,25 +16,21 @@ export default function Footer() {
   };
 
   return (
-    <>
-      <h1>Footer</h1>
-      <div className="footer" data-testid="footer">
-        <input
-          type="image"
-          src={ drinkIcon }
-          data-testid="drinks-bottom-btn"
-          alt="imagem de drink"
-          onClick={ handleDrinksClick }
-        />
-        <input
-          type="image"
-          src={ mealIcon }
-          data-testid="meals-bottom-btn"
-          alt="imagem de talheres"
-          onClick={ handleMealsClick }
-        />
-      </div>
-
-    </>
+    <div className="footer" data-testid="footer">
+      <input
+        type="image"
+        src={ drinkIcon }
+        data-testid="drinks-bottom-btn"
+        alt="imagem de drink"
+        onClick={ handleDrinksClick }
+      />
+      <input
+        type="image"
+        src={ mealIcon }
+        data-testid="meals-bottom-btn"
+        alt="imagem de talheres"
+        onClick={ handleMealsClick }
+      />
+    </div>
   );
 }
