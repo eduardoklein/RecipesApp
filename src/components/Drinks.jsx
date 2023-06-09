@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchDrinks, fetchDrinksCategories, fetchFilteredDrinks } from '../services/api';
+import Footer from './Footer';
 
 class Drinks extends Component {
   state = {
@@ -90,6 +91,7 @@ class Drinks extends Component {
             </Link>
           </div>
         ))}
+        <Footer />
       </div>
     );
   }

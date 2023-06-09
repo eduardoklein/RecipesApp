@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchMealsCategories, fetchMeals, fetchFilteredMeals } from '../services/api';
+import Footer from './Footer';
 
 class Meals extends Component {
   state = {
@@ -88,6 +89,7 @@ class Meals extends Component {
             </Link>
           </div>
         ))}
+        <Footer />
       </div>
     );
   }
