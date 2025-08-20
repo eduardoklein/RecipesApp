@@ -1,10 +1,35 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+# RecipesApp
+
+Aplicativo para gerenciamento e consulta de receitas culinárias. Permite buscar, visualizar, favoritar e compartilhar receitas de forma prática.
+
+## Funcionalidades
+
+- Buscar receitas por nome ou ingrediente
+- Visualizar detalhes de cada receita
+- Favoritar receitas
+- Compartilhar receitas
+- Filtrar receitas por categoria
+
+## Tecnologias Utilizadas
+
+- React
+- Context API
+- React Router
+- CSS Modules
+- Testes com Jest e React Testing Library
+
+## Instalação
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/RecipesApp.git
+   ```
+2. Instale as dependências:
+   ```bash
+   cd RecipesApp
+   npm install
+   ```
+3. Execute o projeto:
+   ```bash
+   npm start
+   ```
